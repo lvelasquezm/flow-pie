@@ -14,7 +14,8 @@ var flowPie = new function () {
 			X: 0,
 			Y: 0
 		},
-		isLast: false
+		isLast: false,
+		isDone: false
 	};
 	this.answeredElements = [];
 
@@ -60,7 +61,7 @@ var flowPie = new function () {
 					this.flow[i].push({id: currentSource.id, sortOrder: maxSortOrder, image: currentSource.image, isFake: false});
 
 					// Store answered items
-					if(currentSource.isAnswered) {
+					if(currentSource.isDone) {
 						this.answeredElements.push(maxSortOrder);
 					}
 				}
@@ -125,17 +126,17 @@ var flowPie = new function () {
 						}
 					}
 
-					// isAnswered property
+					// isDone property
 					if(!_.isUndefined(source)) {
 						// If element is already answered
 						if(this.answeredElements.indexOf(this.flow[i][j].sortOrder) != -1) {
-							this.flow[i][j].isAnswered = true;
+							this.flow[i][j].isDone = true;
 						}else {
-							// Take isAnswered from source
-							if(_.isUndefined(source.isAnswered) || !source.isAnswered) {
-								this.flow[i][j].isAnswered = false;
-							}else if(!_.isUndefined(source.isAnswered) && source.isAnswered) {
-								this.flow[i][j].isAnswered = true;
+							// Take isDone from source
+							if(_.isUndefined(source.isDone) || !source.isDone) {
+								this.flow[i][j].isDone = false;
+							}else if(!_.isUndefined(source.isDone) && source.isDone) {
+								this.flow[i][j].isDone = true;
 							}
 						}
 					}
@@ -184,7 +185,7 @@ var flowPie = new function () {
 
 						// Check
 						var check = $("<i class='fa fa-check check'></i>");
-						if(flowItem.isAnswered) {
+						if(flowItem.isDone) {
 							check.addClass("active");
 						}
 						item.append(check);
@@ -192,7 +193,7 @@ var flowPie = new function () {
 						// Arrow
 						if(flowItem.arrowDirection != "") {
 							var arrow = $("<i class='" + flowItem.arrowClass + "'></i>");
-							if(flowItem.isAnswered) {
+							if(flowItem.isDone) {
 								arrow.addClass("green");
 							}
 							item.append(arrow);
@@ -276,6 +277,7 @@ var flowPie = new function () {
 				X: parseInt(position[0]),
 				Y: parseInt(position[1])
 			};
+			this.currentItem.isDone = false;
 
 			// Light element
 			element.find(".shadow").addClass("inactive");
@@ -313,8 +315,8 @@ var flowPie = new function () {
 				Y: parseInt(position[1])
 			};
 
-			// Update isAnswered property
-			this.flow[this.currentItem.position.X][this.currentItem.position.Y].isAnswered = true;
+			// Update isDone property
+			this.flow[this.currentItem.position.X][this.currentItem.position.Y].isDone = true;
 
 			// Store answered item
 			this.answeredElements.push(this.currentItem.order);
@@ -333,7 +335,7 @@ var flowPie = new function () {
 			for (var i = 0; i < this.flow.length; i++) {
 				for (var j = 0; j < this.flow[i].length; j++) {
 					this.flow[i][j].showShadow = false;
-					this.flow[i][j].isAnswered = true;
+					this.flow[i][j].isDone = true;
 					this.answeredElements.push(this.flow[i][j].sortOrder);
 				}
 			}
